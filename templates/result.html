@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<!DOCTYPE html><!-- このファイルがHTMLであることを宣言 -->
+<html lang="ja"><!-- 言語は日本語に設定 -->
+
+<head>
+    <meta charset="utf-8">
+    <title>Haseco</title><!--ブラウザのタブのタイトルを指定-->
+    <link rel=stylesheet href="../static/css/result.css"><!-- cssファイルの読み込み -->
+    <link rel="icon" href="../static/images/favicon.ico"><!-- ファビコンの設定 -->
+</head>
+
+<section id="answer">
+    <center>
+        <div class="title">
+            {{name}}
+        </div>
+        <img src= "{{ img_path }}" style="margin: 20px; vertical-align: bottom; width: 200px;">
+        
+        <div class="consent">
+            <h3>度数{{alc}}</h3>
+            <h3>特徴{{feature}}</h3>
+        </div>
+        <a href="{{url}}" target="_blank" rel="noopener noreferrer">カクテルの詳細</a>
+        <a href="/">　他のカクテルも探してみる</a>
+    </center>
+</section>
+{% endblock %}

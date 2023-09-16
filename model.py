@@ -46,73 +46,64 @@ class SentenceLukeJapanese:
 
         return torch.stack(all_embeddings)
 
+def recommend(base_input,taste_input,query):
 
-# 既存モデルの読み込み
-MODEL_NAME = "sonoisa/sentence-luke-japanese-base-lite"
-model = SentenceLukeJapanese(MODEL_NAME)
+    # 既存モデルの読み込み
+    MODEL_NAME = "sonoisa/sentence-luke-japanese-base-lite"
+    model = SentenceLukeJapanese(MODEL_NAME)
 
-# [1] cocktail.csvから、カクテルの説明文の列を読み込み、sentencesというリストに説明文を一つずつ追加する
-data = pd.read_csv("cocktail.csv", encoding="shift_jis")
-captions = data["説明文"].tolist()
+    # [1] cocktail.csvから、カクテルの説明文の列を読み込み、sentencesというリストに説明文を一つずつ追加する
+    data = pd.read_csv("cocktail.csv", encoding="shift_jis")
+    captions = data["説明文"].tolist()
 
+    # カクテルの説明文、受け取った文章をエンコード（ベクトル表現に変換）
+    # sentence_embeddings = model.encode(sentences, batch_size=8)
 
-# 標準入力で、ベース、味わい、フリーワードを受け取る
-base_input = input()
-taste_input = input()
-query = input()
-# sentences.append(query)
+    # ベース
+    base = [
+        "ジン",
+        "ウォッカ",
+        "テキーラ",
+        "ラム",
+        "ウイスキー",
+        "ブランデー",
+        "リキュール",
+        "ワイン",
+        "ビール",
+        "日本酒",
+        "ノンアルコール",
+    ]
 
-# カクテルの説明文、受け取った文章をエンコード（ベクトル表現に変換）
-# sentence_embeddings = model.encode(sentences, batch_size=8)
+    # 味わい
+    taste = ["甘口", "中甘口", "中口", "中辛口", "辛口"]
 
+    # カクテルを絞り込んで、説明文のリストを作る
+    sentences = []
+    base_indexs = data[data["base"] == base_input].index.tolist()
+    taste_indexs = data[data["taste"] == taste_input].index.tolist()
+    indexs = sorted(list(set(base_indexs) & set(taste_indexs)))
+    print(indexs)
 
-# ベース
-base = [
-    "ジン",
-    "ウォッカ",
-    "テキーラ",
-    "ラム",
-    "ウイスキー",
-    "ブランデー",
-    "リキュール",
-    "ワイン",
-    "ビール",
-    "日本酒",
-    "ノンアルコール",
-]
+    for i in range(data.shape[0]):
+        if i in indexs:
+            sentences.append(data.at[i, "説明文"])
 
-# 味わい
-taste = ["甘口", "中甘口", "中口", "中辛口", "辛口"]
+    # 文章をベクトル化
+    sentences.append(query)
+    sentence_embeddings = model.encode(sentences, batch_size=8)
 
-# カクテルを絞り込んで、説明文のリストを作る
-sentences = []
-base_indexs = data[data["base"] == base_input].index.tolist()
-taste_indexs = data[data["taste"] == taste_input].index.tolist()
-indexs = sorted(list(set(base_indexs) & set(taste_indexs)))
-print(indexs)
+    # 類似度が一番高いものを出力
+    closest_n = 1
 
-for i in range(data.shape[0]):
-    if i in indexs:
-        sentences.append(data.at[i, "説明文"])
+    distances = scipy.spatial.distance.cdist(
+        [sentence_embeddings[-1]], sentence_embeddings, metric="cosine"
+    )[0]
 
-# 文章をベクトル化
-sentences.append(query)
-sentence_embeddings = model.encode(sentences, batch_size=8)
+    results = zip(range(len(distances)), distances)
+    results = sorted(results, key=lambda x: x[1])
 
-# 類似度が一番高いものを出力
-closest_n = 1
-
-distances = scipy.spatial.distance.cdist(
-    [sentence_embeddings[-1]], sentence_embeddings, metric="cosine"
-)[0]
-
-results = zip(range(len(distances)), distances)
-results = sorted(results, key=lambda x: x[1])
-
-print("\n\n======================\n\n")
-print("Query:", query)
-print("\nあなたにおすすめのカクテルは:")
-
-# for idx, distance in results[1 : closest_n + 1]:
-#     print(sentences[idx].strip(), "(Score: %.4f)" % (distance / 2))
-print(data.iloc[indexs[results[1][0]]])
+    print("\n\n======================\n\n")
+    print("Query:", query)
+    print("\nあなたにおすすめのカクテルは:")
+    id=indexs[results[1][0]]
+    return data.iloc[id, 2], data.iloc[id, 11], data.iloc[id, 12], data.iloc[id, 13], data.iloc[id, 1]

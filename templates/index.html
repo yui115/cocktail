@@ -1,3 +1,77 @@
+{% extends "layout.html" %}
+{% block content %}
+
 <!DOCTYPE html><!-- このファイルがHTMLであることを宣言 -->
 <html lang="ja"><!-- 言語は日本語に設定 -->
 
+<head>
+    <meta charset="utf-8">
+    <title>Haseco</title><!--ブラウザのタブのタイトルを指定-->
+    <link rel=stylesheet href="../static/css/style.css"><!-- cssファイルの読み込み -->
+    <link rel="icon" href="../static/images/favicon.ico"><!-- ファビコンの設定 -->
+</head>
+
+<div class="enter_btn">
+    <form action = "/result" method="post" enctype="multipart/form-data">
+
+        <section id="choice">
+            <section id="select">
+
+        <div class="post-container1">
+            
+            <div class="about-container">
+
+            <span class="custom-dropdown">
+                <div class="select-button">
+                    <select name="taste" id="taste">
+                        <option value="what">味わい</option>
+                        <option value="甘口">甘口</option>
+                        <option value="中甘口">中甘口</option>
+                        <option value="中口">中口</option>
+                        <option value="中辛口">中辛口</option>
+                        <option value="辛口">辛口</option>
+                    </select>
+                
+                </span>
+
+                    <select name="base" id="base">
+                        <option value="what">ベース</option>
+                        <option value="ジン">ジン</option>
+                        <option value="ウォッカ">ウォッカ</option>
+                        <option value="テキーラ">テキーラ</option>
+                        <option value="ラム">ラム</option>
+                        <option value="ウイスキー">ウイスキー</option>
+                        <option value="ブランデー">ブランデー</option>
+                        <option value="リキュール">リキュール</option>
+                        <option value="ワイン">ワイン</option>
+                        <option value="ビール">ビール</option>
+                        <option value="日本酒">日本酒</option>
+                        <option value="ノンアルコール">ノンアルコール</option>
+                    </select>
+                
+                </div>
+                <section id="word-input">
+                    <div class="word-container">
+                        <p class="input-text">
+                            <label for="word"></label>
+                            <br>
+                            <input type="text" name="word" placeholder="フリーワード(全角・日本語)" onkeyup="this.setAttribute('value', this.value);" value=""/ class="text" autocomplete="off" required>
+                        </p>
+                    </div>
+                </section>
+            <section id="send-button">
+                <p><input type="submit" value="この条件で検索" class="send"></p>
+            </section>
+            </div>
+            </div>
+        </section>
+    </div>
+            
+    </form>
+</div>
+<footer>
+    <p>Copyright ©haseco All Rights Reserved.</p>
+  </footer>
+</body>
+
+{% endblock %}

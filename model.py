@@ -102,8 +102,5 @@ def recommend(base_input,taste_input,query):
     results = zip(range(len(distances)), distances)
     results = sorted(results, key=lambda x: x[1])
 
-    print("\n\n======================\n\n")
-    print("Query:", query)
-    print("\nあなたにおすすめのカクテルは:")
     id=indexs[results[1][0]]
     return data.iloc[id, 2], data.iloc[id, 11], data.iloc[id, 12], data.iloc[id, 13], data.iloc[id, 1]

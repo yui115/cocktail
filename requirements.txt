@@ -3,6 +3,7 @@ flask==2.2.2
 requests==2.31.0
 transformers==4.29.2
 sentencepiece==0.1.99
-torch==2.0.1
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch==2.0.1+cpu
 scipy==1.11.1
 pandas==1.5.3
